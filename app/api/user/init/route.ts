@@ -29,11 +29,12 @@ export async function POST() {
     );
   }
 
+  // session.user.id is already a UUID (converted in auth callback)
+  const userId = session.user.id;
+  const email = session.user.email;
+  const username = session.user.name || email.split("@")[0];
+
   try {
-    // session.user.id is already a UUID (converted in auth callback)
-    const userId = session.user.id;
-    const email = session.user.email;
-    const username = session.user.name || email.split("@")[0];
     
     console.log(`🔍 Initializing user with UUID: ${userId}`);
 
