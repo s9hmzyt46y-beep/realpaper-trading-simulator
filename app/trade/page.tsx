@@ -22,7 +22,7 @@ export default function TradePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { t } = useTranslation();
-  const { simulationDate, isSimulationMode } = useSimulationDate();
+  const { simulationDate, isSimulationMode, getDate } = useSimulationDate();
 
   const [tradeType, setTradeType] = useState<"BUY" | "SELL">("BUY");
   const [symbol, setSymbol] = useState("");
@@ -67,8 +67,7 @@ export default function TradePage() {
             },
           },
         }
-      : null,
-    { deps: [refetchTrigger] } // Re-run query when refetchTrigger changes
+      : null
   );
 
   // Initialize user once on first login
@@ -208,8 +207,9 @@ export default function TradePage() {
       console.log("⚠️ Price not loaded, fetching now...");
       try {
         setLoading(true);
-        const dateParam = isSimulationMode && simulationDate
-          ? `&date=${simulationDate.toISOString().split('T')[0]}`
+        const simDate = getDate();
+        const dateParam = isSimulationMode && simDate
+          ? `&date=${simDate.toISOString().split('T')[0]}`
           : '';
         const response = await fetch(`/api/stocks/quote?symbol=${symbol}${dateParam}`);
         const data = await response.json();
@@ -267,8 +267,8 @@ export default function TradePage() {
           type: tradeType,
           quantity,
           pricePerShare: tradePrice,
-          simulationDate: isSimulationMode && simulationDate
-            ? simulationDate.toISOString()
+          simulationDate: isSimulationMode && getDate()
+            ? getDate()!.toISOString()
             : new Date().toISOString(),
         }),
       });
