@@ -94,6 +94,13 @@ export default function PortfolioPage() {
   useEffect(() => {
     if (data?.positions && Array.isArray(data.positions)) {
       setPositions(data.positions as Position[]);
+      
+      // IMMEDIATELY initialize prices with avgCostPerShare
+      const initialPrices: Record<string, number> = {};
+      data.positions.forEach((p: any) => {
+        initialPrices[p.symbol] = p.avgCostPerShare || 0;
+      });
+      setPrices(initialPrices);
     }
     if (data?.portfolioSnapshots) {
       setPortfolioSnapshots(data.portfolioSnapshots);
@@ -109,14 +116,13 @@ export default function PortfolioPage() {
   // Fetch current prices for all positions
   const fetchPrices = async () => {
     if (positions.length === 0) {
-      toast.warning("No positions to refresh");
       return;
     }
 
     setRefreshing(true);
     
     try {
-      const newPrices: Record<string, number> = {};
+      const newPrices: Record<string, number> = { ...prices }; // Start with existing prices
       
       const pricePromises = positions.map(async (position) => {
         try {
@@ -130,12 +136,12 @@ export default function PortfolioPage() {
           const response = await fetch(`/api/stocks/quote?symbol=${position.symbol}${dateParam}`);
           const data = await response.json();
           
-          // Use avgCostPerShare as fallback if API fails
-          const price = data.price || position.avgCostPerShare;
-          newPrices[position.symbol] = price;
+          // Update with real price if available
+          if (data.price) {
+            newPrices[position.symbol] = data.price;
+          }
         } catch (error) {
-          // Use avgCostPerShare as fallback
-          newPrices[position.symbol] = position.avgCostPerShare;
+          // Keep existing price (avgCostPerShare) on error
         }
       });
 
@@ -143,13 +149,7 @@ export default function PortfolioPage() {
       setPrices(newPrices);
       updateLastRefresh();
       
-      // Calculate total value for toast
-      const totalValue = positions.reduce((sum, p) => {
-        const price = newPrices[p.symbol] || p.avgCostPerShare;
-        return sum + (price * p.quantity);
-      }, 0);
-      
-      toast.success(`Prices updated! Portfolio value: ${formatCurrency(totalValue)}`);
+      toast.success("Prices refreshed");
     } catch (error) {
       toast.error("Failed to fetch prices");
     } finally {
