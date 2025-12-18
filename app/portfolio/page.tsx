@@ -361,12 +361,12 @@ export default function PortfolioPage() {
               </TableHeader>
               <TableBody>
                 {positions.map((position) => {
-                  // Always use avgCostPerShare as minimum, update with fetched price if available
-                  const currentPrice = prices[position.symbol] ?? position.avgCostPerShare ?? 0;
-                  const currentValue = currentPrice * position.quantity;
-                  const profitLoss = currentValue - position.totalCost;
-                  const profitLossPercent = position.avgCostPerShare > 0 
-                    ? ((currentPrice - position.avgCostPerShare) / position.avgCostPerShare) * 100 
+                  // ALWAYS show avgCostPerShare (updated with real price if available)
+                  const price = prices[position.symbol] || position.avgCostPerShare || 0;
+                  const value = price * position.quantity;
+                  const pl = value - position.totalCost;
+                  const plPercent = position.avgCostPerShare > 0 
+                    ? ((price - position.avgCostPerShare) / position.avgCostPerShare) * 100 
                     : 0;
                   
                   return (
@@ -374,19 +374,13 @@ export default function PortfolioPage() {
                       <TableCell className="font-medium">{position.symbol}</TableCell>
                       <TableCell className="text-right">{position.quantity.toFixed(4)}</TableCell>
                       <TableCell className="text-right">{formatCurrency(position.avgCostPerShare)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(price)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(value)}</TableCell>
                       <TableCell className="text-right">
-                        {formatCurrency(currentPrice)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        {formatCurrency(currentValue)}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className={profitLoss >= 0 ? 'text-profit' : 'text-loss'}>
-                          {formatCurrency(profitLoss)}
+                        <span className={pl >= 0 ? 'text-profit' : 'text-loss'}>
+                          {formatCurrency(pl)}
                           <br />
-                          <span className="text-xs">
-                            ({formatPercent(profitLossPercent)})
-                          </span>
+                          <span className="text-xs">({formatPercent(plPercent)})</span>
                         </span>
                       </TableCell>
                     </TableRow>
