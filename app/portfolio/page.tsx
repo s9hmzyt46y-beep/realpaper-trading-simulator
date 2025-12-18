@@ -47,6 +47,7 @@ export default function PortfolioPage() {
   const [positions, setPositions] = useState<Position[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [portfolioSnapshots, setPortfolioSnapshots] = useState<any[]>([]);
+  const [prices, setPrices] = useState<Record<string, number>>({});
   const lastPositionsCount = useRef(0);
 
   // Initialize user and fetch data - useQuery must be at top level
@@ -92,14 +93,7 @@ export default function PortfolioPage() {
   // Update positions and snapshots from data
   useEffect(() => {
     if (data?.positions && Array.isArray(data.positions)) {
-      const positionsWithPrices = data.positions.map((p: any) => ({
-        ...p,
-        currentValue: p.currentValue || 0,
-        currentPrice: p.currentPrice || p.avgCostPerShare || 0,
-        profitLoss: p.profitLoss || 0,
-        profitLossPercent: p.profitLossPercent || 0
-      }));
-      setPositions(positionsWithPrices as Position[]);
+      setPositions(data.positions as Position[]);
     }
     if (data?.portfolioSnapshots) {
       setPortfolioSnapshots(data.portfolioSnapshots);
@@ -120,9 +114,10 @@ export default function PortfolioPage() {
     }
 
     setRefreshing(true);
-    toast.info(`Fetching prices for ${positions.length} positions...`);
     
     try {
+      const newPrices: Record<string, number> = {};
+      
       const pricePromises = positions.map(async (position) => {
         try {
           const simDate = isSimulationMode && simulationDate
@@ -137,31 +132,23 @@ export default function PortfolioPage() {
           
           // Use avgCostPerShare as fallback if API fails
           const price = data.price || position.avgCostPerShare;
-          
-          return {
-            ...position,
-            currentPrice: price,
-            currentValue: price * position.quantity,
-            profitLoss: (price * position.quantity) - position.totalCost,
-            profitLossPercent: ((price - position.avgCostPerShare) / position.avgCostPerShare) * 100,
-          };
+          newPrices[position.symbol] = price;
         } catch (error) {
-          // Return position with avgCostPerShare as fallback
-          return {
-            ...position,
-            currentPrice: position.avgCostPerShare,
-            currentValue: position.avgCostPerShare * position.quantity,
-            profitLoss: 0,
-            profitLossPercent: 0,
-          };
+          // Use avgCostPerShare as fallback
+          newPrices[position.symbol] = position.avgCostPerShare;
         }
       });
 
-      const updatedPositions = await Promise.all(pricePromises);
-      setPositions(updatedPositions);
+      await Promise.all(pricePromises);
+      setPrices(newPrices);
       updateLastRefresh();
       
-      const totalValue = updatedPositions.reduce((sum, p) => sum + (p.currentValue || 0), 0);
+      // Calculate total value for toast
+      const totalValue = positions.reduce((sum, p) => {
+        const price = newPrices[p.symbol] || p.avgCostPerShare;
+        return sum + (price * p.quantity);
+      }, 0);
+      
       toast.success(`Prices updated! Portfolio value: ${formatCurrency(totalValue)}`);
     } catch (error) {
       toast.error("Failed to fetch prices");
@@ -222,7 +209,10 @@ export default function PortfolioPage() {
     );
   }
 
-  const totalPositionsValue = positions.reduce((sum, p) => sum + (p.currentValue || 0), 0);
+  const totalPositionsValue = positions.reduce((sum, p) => {
+    const currentPrice = prices[p.symbol] || p.avgCostPerShare;
+    return sum + (currentPrice * p.quantity);
+  }, 0);
   const totalValue = user.currentCash + totalPositionsValue;
   const totalProfitLoss = totalPositionsValue - positions.reduce((sum, p) => sum + p.totalCost, 0);
   const totalReturn = user.initialBalance > 0
@@ -370,30 +360,35 @@ export default function PortfolioPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {positions.map((position) => (
-                  <TableRow key={position.id}>
-                    <TableCell className="font-medium">{position.symbol}</TableCell>
-                    <TableCell className="text-right">{position.quantity.toFixed(4)}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(position.avgCostPerShare)}</TableCell>
-                    <TableCell className="text-right">
-                      {position.currentPrice ? formatCurrency(position.currentPrice) : '—'}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {position.currentValue ? formatCurrency(position.currentValue) : '—'}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {position.profitLoss !== undefined ? (
-                        <span className={position.profitLoss >= 0 ? 'text-profit' : 'text-loss'}>
-                          {formatCurrency(position.profitLoss)}
+                {positions.map((position) => {
+                  const currentPrice = prices[position.symbol] || position.avgCostPerShare;
+                  const currentValue = currentPrice * position.quantity;
+                  const profitLoss = currentValue - position.totalCost;
+                  const profitLossPercent = ((currentPrice - position.avgCostPerShare) / position.avgCostPerShare) * 100;
+                  
+                  return (
+                    <TableRow key={position.id}>
+                      <TableCell className="font-medium">{position.symbol}</TableCell>
+                      <TableCell className="text-right">{position.quantity.toFixed(4)}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(position.avgCostPerShare)}</TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrency(currentPrice)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatCurrency(currentValue)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className={profitLoss >= 0 ? 'text-profit' : 'text-loss'}>
+                          {formatCurrency(profitLoss)}
                           <br />
                           <span className="text-xs">
-                            ({formatPercent(position.profitLossPercent || 0)})
+                            ({formatPercent(profitLossPercent)})
                           </span>
                         </span>
-                      ) : '—'}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           )}
