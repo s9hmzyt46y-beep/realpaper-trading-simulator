@@ -115,12 +115,13 @@ export default function PortfolioPage() {
   // Fetch current prices for all positions
   const fetchPrices = async () => {
     if (positions.length === 0) {
-      console.log("⚠️ fetchPrices: No positions to fetch");
+      toast.warning("No positions to refresh");
       return;
     }
 
-    console.log(`🔄 fetchPrices: Fetching prices for ${positions.length} positions`);
     setRefreshing(true);
+    toast.info(`Fetching prices for ${positions.length} positions...`);
+    
     try {
       const pricePromises = positions.map(async (position) => {
         try {
@@ -131,16 +132,11 @@ export default function PortfolioPage() {
             ? `&date=${simDate.toISOString().split('T')[0]}`
             : '';
           
-          const url = `/api/stocks/quote?symbol=${position.symbol}${dateParam}`;
-          console.log(`📡 Fetching: ${url}`);
-          
-          const response = await fetch(url);
+          const response = await fetch(`/api/stocks/quote?symbol=${position.symbol}${dateParam}`);
           const data = await response.json();
           
           // Use avgCostPerShare as fallback if API fails
           const price = data.price || position.avgCostPerShare;
-          
-          console.log(`✅ ${position.symbol}: ${price}€`);
           
           return {
             ...position,
@@ -150,7 +146,6 @@ export default function PortfolioPage() {
             profitLossPercent: ((price - position.avgCostPerShare) / position.avgCostPerShare) * 100,
           };
         } catch (error) {
-          console.error(`❌ Error fetching ${position.symbol}:`, error);
           // Return position with avgCostPerShare as fallback
           return {
             ...position,
@@ -163,11 +158,13 @@ export default function PortfolioPage() {
       });
 
       const updatedPositions = await Promise.all(pricePromises);
-      console.log("✅ All prices fetched, updating state");
       setPositions(updatedPositions);
       updateLastRefresh();
+      
+      const totalValue = updatedPositions.reduce((sum, p) => sum + (p.currentValue || 0), 0);
+      toast.success(`Prices updated! Portfolio value: ${formatCurrency(totalValue)}`);
     } catch (error) {
-      console.error("❌ Failed to fetch prices:", error);
+      toast.error("Failed to fetch prices");
     } finally {
       setRefreshing(false);
     }
@@ -176,22 +173,15 @@ export default function PortfolioPage() {
   // Initial fetch - run when positions are loaded from DB
   useEffect(() => {
     const dbPositionsCount = data?.positions?.length || 0;
-    console.log(`📊 useEffect: isLoading=${isLoading}, dbPositionsCount=${dbPositionsCount}, lastCount=${lastPositionsCount.current}, positions.length=${positions.length}`);
     
     if (!isLoading && dbPositionsCount > 0 && dbPositionsCount !== lastPositionsCount.current) {
-      console.log("✅ Conditions met! Scheduling fetchPrices in 100ms...");
       lastPositionsCount.current = dbPositionsCount;
       // Fetch prices after positions are loaded from DB
       setTimeout(() => {
-        console.log(`⏰ setTimeout fired! positions.length=${positions.length}`);
         if (positions.length > 0) {
           fetchPrices();
-        } else {
-          console.log("⚠️ positions.length is 0, not fetching");
         }
-      }, 100);
-    } else {
-      console.log("❌ Conditions NOT met");
+      }, 500); // Increased timeout to ensure positions state is fully updated
     }
   }, [isLoading, data?.positions?.length, positions.length]);
 
