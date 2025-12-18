@@ -361,10 +361,13 @@ export default function PortfolioPage() {
               </TableHeader>
               <TableBody>
                 {positions.map((position) => {
-                  const currentPrice = prices[position.symbol] || position.avgCostPerShare;
+                  // Always use avgCostPerShare as minimum, update with fetched price if available
+                  const currentPrice = prices[position.symbol] ?? position.avgCostPerShare ?? 0;
                   const currentValue = currentPrice * position.quantity;
                   const profitLoss = currentValue - position.totalCost;
-                  const profitLossPercent = ((currentPrice - position.avgCostPerShare) / position.avgCostPerShare) * 100;
+                  const profitLossPercent = position.avgCostPerShare > 0 
+                    ? ((currentPrice - position.avgCostPerShare) / position.avgCostPerShare) * 100 
+                    : 0;
                   
                   return (
                     <TableRow key={position.id}>
