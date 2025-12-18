@@ -147,14 +147,10 @@ export default function PortfolioPage() {
 
   // Initial fetch
   useEffect(() => {
-    if (!isLoading && positions.length > 0) {
-      // Only fetch if positions don't have current values
-      const needsFetch = positions.some(p => !p.currentValue || p.currentValue === 0);
-      if (needsFetch) {
-        fetchPrices();
-      }
+    if (!isLoading && positions.length > 0 && !refreshing) {
+      fetchPrices();
     }
-  }, [isLoading, positions.length]);
+  }, [isLoading, data?.positions]);
 
   // Auto-refresh
   useEffect(() => {
