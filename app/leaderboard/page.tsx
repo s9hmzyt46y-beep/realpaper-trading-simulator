@@ -134,16 +134,16 @@ export default function LeaderboardPage() {
             <CardTitle>{t("leaderboard.title")}</CardTitle>
             <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
               <TabsList>
-                <TabsTrigger value="today" active={period === "today"}>
+                <TabsTrigger value="today">
                   {t("leaderboard.period.today")}
                 </TabsTrigger>
-                <TabsTrigger value="week" active={period === "week"}>
+                <TabsTrigger value="week">
                   {t("leaderboard.period.week")}
                 </TabsTrigger>
-                <TabsTrigger value="month" active={period === "month"}>
+                <TabsTrigger value="month">
                   {t("leaderboard.period.month")}
                 </TabsTrigger>
-                <TabsTrigger value="allTime" active={period === "allTime"}>
+                <TabsTrigger value="allTime">
                   {t("leaderboard.period.allTime")}
                 </TabsTrigger>
               </TabsList>
