@@ -47,6 +47,7 @@ export default function PortfolioPage() {
   const [positions, setPositions] = useState<Position[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [portfolioSnapshots, setPortfolioSnapshots] = useState<any[]>([]);
+  const [hasFetchedInitially, setHasFetchedInitially] = useState(false);
 
   // Initialize user and fetch data - useQuery must be at top level
   const { isLoading, error, data } = db.useQuery(
@@ -99,6 +100,8 @@ export default function PortfolioPage() {
         profitLossPercent: p.profitLossPercent || 0
       }));
       setPositions(positionsWithPrices as Position[]);
+      // Reset fetch flag when new data arrives from DB
+      setHasFetchedInitially(false);
     }
     if (data?.portfolioSnapshots) {
       setPortfolioSnapshots(data.portfolioSnapshots);
@@ -145,12 +148,13 @@ export default function PortfolioPage() {
     }
   };
 
-  // Initial fetch
+  // Initial fetch - run once when positions are first loaded
   useEffect(() => {
-    if (!isLoading && positions.length > 0 && !refreshing) {
+    if (!isLoading && positions.length > 0 && !hasFetchedInitially) {
       fetchPrices();
+      setHasFetchedInitially(true);
     }
-  }, [isLoading, data?.positions]);
+  }, [isLoading, positions.length, hasFetchedInitially]);
 
   // Auto-refresh
   useEffect(() => {
