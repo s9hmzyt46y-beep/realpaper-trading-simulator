@@ -114,33 +114,60 @@ export default function PortfolioPage() {
 
   // Fetch current prices for all positions
   const fetchPrices = async () => {
-    if (positions.length === 0) return;
+    if (positions.length === 0) {
+      console.log("⚠️ fetchPrices: No positions to fetch");
+      return;
+    }
 
+    console.log(`🔄 fetchPrices: Fetching prices for ${positions.length} positions`);
     setRefreshing(true);
     try {
       const pricePromises = positions.map(async (position) => {
-        const simDate = isSimulationMode && simulationDate
-          ? (simulationDate instanceof Date ? simulationDate : new Date(simulationDate))
-          : null;
-        const dateParam = simDate
-          ? `&date=${simDate.toISOString().split('T')[0]}`
-          : '';
-        const response = await fetch(`/api/stocks/quote?symbol=${position.symbol}${dateParam}`);
-        const data = await response.json();
-        return {
-          ...position,
-          currentPrice: data.price,
-          currentValue: data.price * position.quantity,
-          profitLoss: (data.price * position.quantity) - position.totalCost,
-          profitLossPercent: ((data.price - position.avgCostPerShare) / position.avgCostPerShare) * 100,
-        };
+        try {
+          const simDate = isSimulationMode && simulationDate
+            ? (simulationDate instanceof Date ? simulationDate : new Date(simulationDate))
+            : null;
+          const dateParam = simDate
+            ? `&date=${simDate.toISOString().split('T')[0]}`
+            : '';
+          
+          const url = `/api/stocks/quote?symbol=${position.symbol}${dateParam}`;
+          console.log(`📡 Fetching: ${url}`);
+          
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          // Use avgCostPerShare as fallback if API fails
+          const price = data.price || position.avgCostPerShare;
+          
+          console.log(`✅ ${position.symbol}: ${price}€`);
+          
+          return {
+            ...position,
+            currentPrice: price,
+            currentValue: price * position.quantity,
+            profitLoss: (price * position.quantity) - position.totalCost,
+            profitLossPercent: ((price - position.avgCostPerShare) / position.avgCostPerShare) * 100,
+          };
+        } catch (error) {
+          console.error(`❌ Error fetching ${position.symbol}:`, error);
+          // Return position with avgCostPerShare as fallback
+          return {
+            ...position,
+            currentPrice: position.avgCostPerShare,
+            currentValue: position.avgCostPerShare * position.quantity,
+            profitLoss: 0,
+            profitLossPercent: 0,
+          };
+        }
       });
 
       const updatedPositions = await Promise.all(pricePromises);
+      console.log("✅ All prices fetched, updating state");
       setPositions(updatedPositions);
       updateLastRefresh();
     } catch (error) {
-      console.error("Failed to fetch prices:", error);
+      console.error("❌ Failed to fetch prices:", error);
     } finally {
       setRefreshing(false);
     }
@@ -149,15 +176,22 @@ export default function PortfolioPage() {
   // Initial fetch - run when positions are loaded from DB
   useEffect(() => {
     const dbPositionsCount = data?.positions?.length || 0;
+    console.log(`📊 useEffect: isLoading=${isLoading}, dbPositionsCount=${dbPositionsCount}, lastCount=${lastPositionsCount.current}, positions.length=${positions.length}`);
     
     if (!isLoading && dbPositionsCount > 0 && dbPositionsCount !== lastPositionsCount.current) {
+      console.log("✅ Conditions met! Scheduling fetchPrices in 100ms...");
       lastPositionsCount.current = dbPositionsCount;
       // Fetch prices after positions are loaded from DB
       setTimeout(() => {
+        console.log(`⏰ setTimeout fired! positions.length=${positions.length}`);
         if (positions.length > 0) {
           fetchPrices();
+        } else {
+          console.log("⚠️ positions.length is 0, not fetching");
         }
       }, 100);
+    } else {
+      console.log("❌ Conditions NOT met");
     }
   }, [isLoading, data?.positions?.length, positions.length]);
 
