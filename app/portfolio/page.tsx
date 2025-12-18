@@ -114,8 +114,13 @@ export default function PortfolioPage() {
 
   // Fetch current prices for all positions
   const fetchPrices = async () => {
-    if (positions.length === 0) return;
+    console.log("🔄 fetchPrices called, positions.length:", positions.length);
+    if (positions.length === 0) {
+      console.log("❌ fetchPrices aborted: no positions");
+      return;
+    }
 
+    console.log("✅ fetchPrices starting...");
     setRefreshing(true);
     try {
       const pricePromises = positions.map(async (position) => {
@@ -149,15 +154,20 @@ export default function PortfolioPage() {
   // Initial fetch - run when positions are loaded from DB
   useEffect(() => {
     const dbPositionsCount = data?.positions?.length || 0;
+    console.log("📊 useEffect triggered - isLoading:", isLoading, "dbPositionsCount:", dbPositionsCount, "lastCount:", lastPositionsCount.current, "positions.length:", positions.length);
     
     if (!isLoading && dbPositionsCount > 0 && dbPositionsCount !== lastPositionsCount.current) {
+      console.log("✅ Conditions met, will fetch prices");
       lastPositionsCount.current = dbPositionsCount;
       // Fetch prices after positions are loaded from DB
       setTimeout(() => {
+        console.log("⏰ setTimeout fired, positions.length:", positions.length);
         if (positions.length > 0) {
           fetchPrices();
         }
       }, 100);
+    } else {
+      console.log("❌ Conditions NOT met");
     }
   }, [isLoading, data?.positions?.length, positions.length]);
 
