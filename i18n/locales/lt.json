@@ -1,0 +1,165 @@
+{
+  "nav": {
+    "portfolio": "Portfelis",
+    "trade": "Prekyba",
+    "history": "Istorija",
+    "tournament": "Turnyrai",
+    "leaderboard": "Lyderių lenta",
+    "achievements": "Pasiekimai",
+    "riskProfile": "Rizikos profilis"
+  },
+  "common": {
+    "loading": "Kraunama...",
+    "error": "Klaida",
+    "success": "Sėkmingai",
+    "cancel": "Atšaukti",
+    "confirm": "Patvirtinti",
+    "save": "Išsaugoti",
+    "delete": "Ištrinti",
+    "edit": "Redaguoti",
+    "add": "Pridėti",
+    "close": "Uždaryti",
+    "search": "Ieškoti",
+    "filter": "Filtruoti",
+    "export": "Eksportuoti",
+    "refresh": "Atnaujinti"
+  },
+  "auth": {
+    "signIn": "Prisijungti",
+    "signOut": "Atsijungti",
+    "signInWith": "Prisijungti su {{provider}}",
+    "welcome": "Sveiki atvykę į RealPaper Trading"
+  },
+  "portfolio": {
+    "title": "Mano portfelis",
+    "totalValue": "Bendra vertė",
+    "cash": "Grynieji",
+    "positions": "Pozicijos",
+    "profitLoss": "Pelnas/Nuostoliai",
+    "return": "Grąža",
+    "symbol": "Simbolis",
+    "quantity": "Kiekis",
+    "avgCost": "Vid. kaina",
+    "currentPrice": "Dabartinė kaina",
+    "value": "Vertė",
+    "pl": "P/N",
+    "autoRefresh": "Auto atnaujinimas",
+    "lastUpdated": "Paskutinis atnaujinimas",
+    "secondsAgo": "prieš {{seconds}}s"
+  },
+  "trade": {
+    "title": "Prekyba",
+    "buy": "Pirkti",
+    "sell": "Parduoti",
+    "symbol": "Simbolis",
+    "enterSymbol": "Įveskite simbolį (pvz., AAPL)",
+    "amount": "Suma",
+    "enterAmount": "Įveskite sumą eurais",
+    "shares": "Akcijos",
+    "enterShares": "Įveskite akcijų skaičių",
+    "currentPrice": "Dabartinė kaina",
+    "total": "Iš viso",
+    "execute": "Vykdyti sandorį",
+    "addToWatchlist": "Pridėti į stebimų sąrašą",
+    "removeFromWatchlist": "Pašalinti iš stebimų sąrašo",
+    "insufficientFunds": "Nepakanka lėšų",
+    "insufficientShares": "Nepakanka akcijų",
+    "tradeSuccess": "Sandoris sėkmingai įvykdytas!",
+    "tradeError": "Nepavyko įvykdyti sandorio"
+  },
+  "history": {
+    "title": "Prekybos istorija",
+    "date": "Data",
+    "symbol": "Simbolis",
+    "type": "Tipas",
+    "quantity": "Kiekis",
+    "price": "Kaina",
+    "total": "Iš viso",
+    "simulationDate": "Simuliacijos data",
+    "charts": "Grafikai",
+    "priceChart": "Kainos grafikas",
+    "portfolioChart": "Portfelio vertė",
+    "plChart": "Pelnas/Nuostoliai"
+  },
+  "tournament": {
+    "title": "Turnyrai",
+    "create": "Sukurti turnyrą",
+    "join": "Prisijungti",
+    "leave": "Palikti",
+    "name": "Turnyro pavadinimas",
+    "startDate": "Pradžios data",
+    "endDate": "Pabaigos data",
+    "startingBalance": "Pradinis balansas",
+    "participants": "Dalyviai",
+    "leaderboard": "Lyderių lenta",
+    "rank": "Vieta",
+    "username": "Vartotojas",
+    "return": "Grąža",
+    "status": {
+      "upcoming": "Būsimas",
+      "active": "Aktyvus",
+      "completed": "Užbaigtas"
+    }
+  },
+  "achievements": {
+    "title": "Pasiekimai",
+    "unlocked": "Atrakinta",
+    "locked": "Užrakinta",
+    "progress": "Progresas",
+    "types": {
+      "first_trade": "Pirmas sandoris",
+      "profit_10_percent": "10% pelnas",
+      "streak_7_days": "7 dienų serija",
+      "diversification": "Diversifikuotas portfelis",
+      "big_win": "Didelis laimėjimas",
+      "diamond_hands": "Deimantinės rankos",
+      "day_trader": "Dienos prekiautojas"
+    },
+    "descriptions": {
+      "first_trade": "Įvykdykite pirmą sandorį",
+      "profit_10_percent": "Pasiekite 10% ar didesnę grąžą",
+      "streak_7_days": "Prekiaukite 7 dienas iš eilės",
+      "diversification": "Turėkite 5 ar daugiau skirtingų akcijų",
+      "big_win": "Uždirbkite 50% ar daugiau vienai akcijai",
+      "diamond_hands": "Laikykite poziciją 30+ dienų",
+      "day_trader": "Įvykdykite 10+ sandorių per dieną"
+    }
+  },
+  "riskProfile": {
+    "title": "Rizikos profilis",
+    "assessment": "Rizikos įvertinimas",
+    "low": "Maža rizika",
+    "medium": "Vidutinė rizika",
+    "high": "Didelė rizika",
+    "recommendation": "Portfelio rekomendacija",
+    "allocation": "Siūlomas paskirstymas",
+    "autoInvest": "Automatinis investavimas",
+    "volatility": "Nepastovumas",
+    "description": {
+      "low": "Konservatyvus požiūris su dėmesiu stabilumui",
+      "medium": "Subalansuotas požiūris tarp augimo ir stabilumo",
+      "high": "Agresyvus požiūris maksimalioms grąžoms"
+    }
+  },
+  "leaderboard": {
+    "title": "Lyderių lenta",
+    "rank": "Vieta",
+    "username": "Vartotojas",
+    "return": "Grąža",
+    "totalValue": "Bendra vertė",
+    "period": {
+      "today": "Šiandien",
+      "week": "7 dienos",
+      "month": "30 dienų",
+      "allTime": "Visų laikų"
+    }
+  },
+  "simulation": {
+    "title": "Simuliacijos režimas",
+    "active": "Simuliacija aktyvi",
+    "selectDate": "Pasirinkite datą",
+    "backToNow": "Grįžti į dabartį",
+    "tradingOn": "Prekiaujama"
+  }
+}
+

@@ -1,0 +1,165 @@
+{
+  "nav": {
+    "portfolio": "Portfolio",
+    "trade": "Trade",
+    "history": "History",
+    "tournament": "Tournaments",
+    "leaderboard": "Leaderboard",
+    "achievements": "Achievements",
+    "riskProfile": "Risk Profile"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "refresh": "Refresh"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signInWith": "Sign in with {{provider}}",
+    "welcome": "Welcome to RealPaper Trading"
+  },
+  "portfolio": {
+    "title": "My Portfolio",
+    "totalValue": "Total Value",
+    "cash": "Cash",
+    "positions": "Positions",
+    "profitLoss": "Profit/Loss",
+    "return": "Return",
+    "symbol": "Symbol",
+    "quantity": "Quantity",
+    "avgCost": "Avg Cost",
+    "currentPrice": "Current Price",
+    "value": "Value",
+    "pl": "P/L",
+    "autoRefresh": "Auto Refresh",
+    "lastUpdated": "Last updated",
+    "secondsAgo": "{{seconds}}s ago"
+  },
+  "trade": {
+    "title": "Trade",
+    "buy": "Buy",
+    "sell": "Sell",
+    "symbol": "Symbol",
+    "enterSymbol": "Enter symbol (e.g., AAPL)",
+    "amount": "Amount",
+    "enterAmount": "Enter amount in EUR",
+    "shares": "Shares",
+    "enterShares": "Enter number of shares",
+    "currentPrice": "Current Price",
+    "total": "Total",
+    "execute": "Execute Trade",
+    "addToWatchlist": "Add to Watchlist",
+    "removeFromWatchlist": "Remove from Watchlist",
+    "insufficientFunds": "Insufficient funds",
+    "insufficientShares": "Insufficient shares",
+    "tradeSuccess": "Trade executed successfully!",
+    "tradeError": "Failed to execute trade"
+  },
+  "history": {
+    "title": "Trading History",
+    "date": "Date",
+    "symbol": "Symbol",
+    "type": "Type",
+    "quantity": "Quantity",
+    "price": "Price",
+    "total": "Total",
+    "simulationDate": "Simulation Date",
+    "charts": "Charts",
+    "priceChart": "Price Chart",
+    "portfolioChart": "Portfolio Value",
+    "plChart": "Profit/Loss"
+  },
+  "tournament": {
+    "title": "Tournaments",
+    "create": "Create Tournament",
+    "join": "Join",
+    "leave": "Leave",
+    "name": "Tournament Name",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "startingBalance": "Starting Balance",
+    "participants": "Participants",
+    "leaderboard": "Leaderboard",
+    "rank": "Rank",
+    "username": "Username",
+    "return": "Return",
+    "status": {
+      "upcoming": "Upcoming",
+      "active": "Active",
+      "completed": "Completed"
+    }
+  },
+  "achievements": {
+    "title": "Achievements",
+    "unlocked": "Unlocked",
+    "locked": "Locked",
+    "progress": "Progress",
+    "types": {
+      "first_trade": "First Trade",
+      "profit_10_percent": "10% Profit",
+      "streak_7_days": "7 Day Streak",
+      "diversification": "Diversified Portfolio",
+      "big_win": "Big Winner",
+      "diamond_hands": "Diamond Hands",
+      "day_trader": "Day Trader"
+    },
+    "descriptions": {
+      "first_trade": "Execute your first trade",
+      "profit_10_percent": "Achieve 10% or more return",
+      "streak_7_days": "Trade for 7 consecutive days",
+      "diversification": "Hold 5 or more different stocks",
+      "big_win": "Gain 50% or more on a single stock",
+      "diamond_hands": "Hold a position for 30+ days",
+      "day_trader": "Execute 10+ trades in one day"
+    }
+  },
+  "riskProfile": {
+    "title": "Risk Profile",
+    "assessment": "Risk Assessment",
+    "low": "Low Risk",
+    "medium": "Medium Risk",
+    "high": "High Risk",
+    "recommendation": "Portfolio Recommendation",
+    "allocation": "Suggested Allocation",
+    "autoInvest": "Auto Invest",
+    "volatility": "Volatility",
+    "description": {
+      "low": "Conservative approach with focus on stability",
+      "medium": "Balanced approach between growth and stability",
+      "high": "Aggressive approach focused on maximum returns"
+    }
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "rank": "Rank",
+    "username": "Username",
+    "return": "Return",
+    "totalValue": "Total Value",
+    "period": {
+      "today": "Today",
+      "week": "7 Days",
+      "month": "30 Days",
+      "allTime": "All Time"
+    }
+  },
+  "simulation": {
+    "title": "Simulation Mode",
+    "active": "Simulation Active",
+    "selectDate": "Select Date",
+    "backToNow": "Back to Now",
+    "tradingOn": "Trading on"
+  }
+}
+
