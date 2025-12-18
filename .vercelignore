@@ -1,0 +1,12 @@
+# Development files
+.env*.local
+node_modules
+
+# Documentation
+*.md
+!README.md
+
+# Git
+.git
+.gitignore
+
