@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { db } from "@/lib/instantdb";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +47,7 @@ export default function PortfolioPage() {
   const [positions, setPositions] = useState<Position[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [portfolioSnapshots, setPortfolioSnapshots] = useState<any[]>([]);
-  const [hasFetchedInitially, setHasFetchedInitially] = useState(false);
+  const lastPositionsCount = useRef(0);
 
   // Initialize user and fetch data - useQuery must be at top level
   const { isLoading, error, data } = db.useQuery(
@@ -100,8 +100,6 @@ export default function PortfolioPage() {
         profitLossPercent: p.profitLossPercent || 0
       }));
       setPositions(positionsWithPrices as Position[]);
-      // Reset fetch flag when new data arrives from DB
-      setHasFetchedInitially(false);
     }
     if (data?.portfolioSnapshots) {
       setPortfolioSnapshots(data.portfolioSnapshots);
@@ -148,13 +146,20 @@ export default function PortfolioPage() {
     }
   };
 
-  // Initial fetch - run once when positions are first loaded
+  // Initial fetch - run when positions are loaded from DB
   useEffect(() => {
-    if (!isLoading && positions.length > 0 && !hasFetchedInitially) {
-      fetchPrices();
-      setHasFetchedInitially(true);
+    const dbPositionsCount = data?.positions?.length || 0;
+    
+    if (!isLoading && dbPositionsCount > 0 && dbPositionsCount !== lastPositionsCount.current) {
+      lastPositionsCount.current = dbPositionsCount;
+      // Fetch prices after positions are loaded from DB
+      setTimeout(() => {
+        if (positions.length > 0) {
+          fetchPrices();
+        }
+      }, 100);
     }
-  }, [isLoading, positions.length, hasFetchedInitially]);
+  }, [isLoading, data?.positions?.length, positions.length]);
 
   // Auto-refresh
   useEffect(() => {
